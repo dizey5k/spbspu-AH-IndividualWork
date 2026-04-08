@@ -8,16 +8,15 @@ import csv
 from datetime import datetime
 
 # ----------------------------------------------------------------------
-# Конфигурация
+# config
 # ----------------------------------------------------------------------
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # корень проекта
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_MODEL_PATH = os.path.join(BASE_DIR, "models", "dental_binary_model.pth")
 CLASS_NAMES = ['caries', 'healthy']
 IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.bmp', '.tiff', '.tif'}
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# Трансформации (как при валидации)
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
@@ -25,9 +24,6 @@ transform = transforms.Compose([
                          std=[0.229, 0.224, 0.225])
 ])
 
-# ----------------------------------------------------------------------
-# Загрузка модели
-# ----------------------------------------------------------------------
 def load_model(model_path):
     model = models.resnet18(weights=None)
     num_features = model.fc.in_features
@@ -37,9 +33,6 @@ def load_model(model_path):
     model.eval()
     return model
 
-# ----------------------------------------------------------------------
-# Предсказание одного изображения
-# ----------------------------------------------------------------------
 def predict_image(model, image_path):
     """Возвращает (pred_class, confidence, probs_list)"""
     image = Image.open(image_path).convert('RGB')
@@ -51,9 +44,6 @@ def predict_image(model, image_path):
         confidence = probabilities[0, pred_idx].item()
     return CLASS_NAMES[pred_idx], confidence, probabilities.cpu().numpy()[0]
 
-# ----------------------------------------------------------------------
-# Сканирование папки на изображения
-# ----------------------------------------------------------------------
 def get_image_files(folder, recursive=False):
     image_files = []
     if recursive:
@@ -68,9 +58,6 @@ def get_image_files(folder, recursive=False):
                 image_files.append(full_path)
     return sorted(image_files)
 
-# ----------------------------------------------------------------------
-# Главная функция
-# ----------------------------------------------------------------------
 def main():
     parser = argparse.ArgumentParser(description='Predict dental caries for all images in a folder')
     parser.add_argument('folder', type=str, help='Path to folder containing images')
@@ -117,7 +104,6 @@ def main():
         except Exception as e:
             print(f"[{i}/{len(image_paths)}] {img_path} - ERROR: {e}")
 
-    # Сохраняем CSV, если нужно
     if args.csv:
         with open(args.csv, 'w', newline='', encoding='utf-8') as f:
             writer = csv.DictWriter(f, fieldnames=['image', 'prediction', 'confidence', 'prob_caries', 'prob_healthy'])
@@ -132,7 +118,6 @@ def main():
                 })
         print(f"\nResults saved to {args.csv}")
 
-    # Краткая статистика
     pred_counts = {cls: sum(1 for r in results if r['prediction'] == cls) for cls in CLASS_NAMES}
     print("\n--- Summary ---")
     for cls, cnt in pred_counts.items():

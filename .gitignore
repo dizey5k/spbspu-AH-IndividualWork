@@ -1,2 +1,4 @@
 /.venv
-/data
+/data/raw
+/data/extra_healthy
+/data/binary
