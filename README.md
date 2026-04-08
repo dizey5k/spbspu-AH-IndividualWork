@@ -85,3 +85,5 @@ python src/predict.py --show-probs
 # Сохрнанить результаты в .csv (results.csv)
 python src/predict.py --csv
 ```
+
+## GL в сдаче
