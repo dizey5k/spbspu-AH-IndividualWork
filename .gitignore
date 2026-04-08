@@ -2,3 +2,5 @@
 /data/raw
 /data/extra_healthy
 /data/binary
+~$*.docx
+~$*.doc
