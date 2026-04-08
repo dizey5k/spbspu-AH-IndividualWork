@@ -63,7 +63,7 @@ def main():
     parser.add_argument('folder', type=str, help='Path to folder containing images')
     parser.add_argument('--model', type=str, default=DEFAULT_MODEL_PATH, help='Path to model weights')
     parser.add_argument('--recursive', action='store_true', help='Scan subfolders recursively')
-    parser.add_argument('--show_probs', action='store_true', help='Show probabilities for each class')
+    parser.add_argument('--show-probs', action='store_true', help='Show probabilities for each class')
     parser.add_argument('--csv', type=str, help='Save results to CSV file (e.g., results.csv)')
     args = parser.parse_args()
 
